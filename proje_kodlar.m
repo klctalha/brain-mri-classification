@@ -1,4 +1,4 @@
-% Adım 1: Veriseti Hazırlama (Train / Validation / Test Ayrımı)
+% Veriseti Hazırlama (Train / Validation / Test Ayrımı)
 projectRoot = pwd;
 
 datasetPath = fullfile(projectRoot, 'archive', 'brain_tumor_dataset');
@@ -71,7 +71,7 @@ for i = 1:length(imdsTest.Files)
 end
 
 
-% Adım 2: Görüntüleri Eğitime Hazırlama (Boyutlandırma ve Augmentasyon)
+% Görüntüleri Eğitime Hazırlama (Boyutlandırma ve Augmentasyon)
 
 trainPath = fullfile(outputBasePath, 'train');
 validationPath = fullfile(outputBasePath, 'validation');
@@ -96,7 +96,7 @@ augimdsValidation = augmentedImageDatastore(inputSize, imdsValidation);
 augimdsTest = augmentedImageDatastore(inputSize, imdsTest);
 
 
-% Adım 3: Kendi CNN Modelimizi Tanımlama
+% Kendi CNN Modelimizi Tanımlama
 
 layers = [
     imageInputLayer([224 224 3], 'Name', 'input')
@@ -127,8 +127,8 @@ layers = [
 
 % analyzeNetwork(layers);
 
-%{
-%% Adım 4.1: CNN - Adam Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
+
+%%  CNN - Adam Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
 
 optionsAdam = trainingOptions('adam', ...
     'InitialLearnRate', 1e-4, ...
@@ -164,10 +164,10 @@ hyperParams.ValidationFraction = 0.2;
 writetable(hyperParams, 'cnn_adam_hyperparameters.csv');
 disp('En iyi CNN Adam hiperparametre tablosu kaydedildi.');
 
-%}
 
-%{
-%% Adım 4.2: CNN - Adam Eğitilmiş Model ile Test ve Yüzdelik Performans
+
+
+%% CNN - Adam Eğitilmiş Model ile Test ve Yüzdelik Performans
 
 load('cnn_adam_best_model.mat', 'netCustom', 'classNames');
 
@@ -196,10 +196,8 @@ figure;
 confusionchart(trueLabels, predictedLabels_adam);
 title('Confusion Matrix - CNN Adam (Test)');
 
-%}
 
-%{
-%% Adım 4.3: CNN - RMSprop Optimizasyonu ile Eğitim ve Hiperparametre Kaydı (Learning Rate Sabit)
+%% CNN - RMSprop Optimizasyonu ile Eğitim ve Hiperparametre Kaydı (Learning Rate Sabit)
 
 optionsRMSprop = trainingOptions('rmsprop', ...
     'InitialLearnRate', 1e-4, ...        
@@ -235,10 +233,9 @@ hyperParams.ValidationFraction = 0.2;
 writetable(hyperParams, 'cnn_rmsprop_hyperparameters.csv');
 disp('En iyi CNN RMSprop hiperparametre tablosu kaydedildi.');
 
-%}
 
-%{
-%% Adım 4.4: CNN - RMSprop Eğitilmiş Model ile Test ve Yüzdelik Performans
+
+%% CNN - RMSprop Eğitilmiş Model ile Test ve Yüzdelik Performans
 
 load('cnn_rmsprop_best_model.mat', 'netCustom', 'classNames');
 
@@ -267,10 +264,10 @@ figure;
 confusionchart(trueLabels, predictedLabels_rmsprop);
 title('Confusion Matrix - CNN RMSprop (Test)');
 
-%}
 
-%{
-%% Adım 4.5: CNN - SGDM Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
+
+
+%% CNN - SGDM Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
 
 optionsSGDM = trainingOptions('sgdm', ...
     'InitialLearnRate', 1e-4, ...
@@ -307,10 +304,10 @@ hyperParams.ValidationFraction = 0.2;
 writetable(hyperParams, 'cnn_sgdm_hyperparameters.csv');
 disp('CNN SGDM hiperparametre tablosu kaydedildi.');
 
-%}
 
-%{
-%% Adım 4.6: CNN - SGDM Eğitilmiş Model ile Test ve Yüzdelik Performans
+
+
+%% CNN - SGDM Eğitilmiş Model ile Test ve Yüzdelik Performans
 
 load('cnn_sgdm_best_model.mat', 'netCustom', 'classNames');
 
@@ -339,9 +336,9 @@ figure;
 confusionchart(trueLabels, predictedLabels_sgdm);
 title('Confusion Matrix - CNN SGDM (Test)');
 
-%}
 
-%{
+
+
 
 %% Eğitim, Doğrulama, Test ve Toplam Veri Dağılımı Tablosu ve Grafikleri
 
@@ -423,9 +420,9 @@ for i = 1:length(accuracies)
     text(i, accuracies(i)+1, sprintf('%.2f%%', accuracies(i)), 'HorizontalAlignment', 'center');
 end
 
-%}
 
-%{
+
+
 %% Eğitim, Doğrulama, Test ve Toplam Veri Dağılımı Tablosu ve Grafikleri
 
 trainCounts = countcats(imdsTrain.Labels);
@@ -515,10 +512,10 @@ end
 
 savefig(fullfile(saveFolder, 'optimizer_karsilastirma_accuracy.fig'));
 
-%}
 
-%{
-%% Adım 6.1: MobileNetV2 - Adam Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
+
+
+%% MobileNetV2 - Adam Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
 
 net = mobilenetv2;
 
@@ -578,11 +575,11 @@ hyperParams.ValidationFraction = 0.2;
 writetable(hyperParams, 'mobilenetv2_adam_hyperparameters.csv');
 disp('En iyi MobileNetV2 Adam hiperparametre tablosu başarıyla kaydedildi.');
 
-%}
 
-%{
 
-%% Adım 6.2: MobileNetV2 - Adam Eğitilmiş Model ile Test ve Performans Değerlendirmesi
+
+
+%% MobileNetV2 - Adam Eğitilmiş Model ile Test ve Performans Değerlendirmesi
 
 if isfile('mobilenetv2_adam_best_model.mat')
     load('mobilenetv2_adam_best_model.mat', 'netCustom', 'classNames');
@@ -619,10 +616,10 @@ confusionchart(trueLabels, predictedLabels_mobilenetv2_adam);
 title('Confusion Matrix - MobileNetV2 Adam (Test)');
 grid on;
 
-%}
 
-%{
-%% Adım 6.3: MobileNetV2 - RMSprop Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
+
+
+%% MobileNetV2 - RMSprop Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
 
 net = mobilenetv2;
 
@@ -681,11 +678,11 @@ hyperParams.ValidationFraction = 0.2;
 writetable(hyperParams, 'mobilenetv2_rmsprop_hyperparameters.csv');
 disp('En iyi MobileNetV2 RMSprop hiperparametre tablosu başarıyla kaydedildi.');
 
-%}
 
-%{
 
-%% Adım 6.4: MobileNetV2 - RMSprop Eğitilmiş Model ile Test ve Performans Değerlendirmesi
+
+
+%% MobileNetV2 - RMSprop Eğitilmiş Model ile Test ve Performans Değerlendirmesi
 
 if isfile('mobilenetv2_rmsprop_best_model.mat')
     load('mobilenetv2_rmsprop_best_model.mat', 'netCustom', 'classNames');
@@ -722,9 +719,8 @@ confusionchart(trueLabels, predictedLabels_mobilenetv2_rmsprop);
 title('Confusion Matrix - MobileNetV2 RMSprop (Test)');
 grid on;
 
-%}
 
-%{
+
 save('cnn_adam_trainNetworkProject.mat', 'net_cnn_adam', 'info_adam', 'optionsAdam', '-v7.3');
 disp('CNN Adam trainNetworkProject dosyası başarıyla kaydedildi.');
 
@@ -734,11 +730,11 @@ disp('CNN RMSprop trainNetworkProject dosyası başarıyla kaydedildi.');
 save('cnn_sgdm_trainNetworkProject.mat', 'net_cnn_sgdm', 'info_sgdm', 'optionsSGDM', '-v7.3');
 disp('CNN SGDM trainNetworkProject dosyası başarıyla kaydedildi.');
 
-%}
 
 
-%{
-%% Adım 6.5: MobileNetV2 - SGDM Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
+
+
+%%  MobileNetV2 - SGDM Optimizasyonu ile Eğitim ve Hiperparametre Kaydı
 
 net = mobilenetv2;
 
@@ -800,10 +796,10 @@ hyperParams.ValidationFraction = 0.2;
 writetable(hyperParams, 'mobilenetv2_sgdm_hyperparameters.csv');
 disp('En iyi MobileNetV2 SGDM hiperparametre tablosu başarıyla kaydedildi.');
 
-%}
 
-%{
-%% Adım 6.6: MobileNetV2 SGDM - Eğitilmiş Model ile Test ve Test Sonuçlarını Kaydetme
+
+
+%% MobileNetV2 SGDM - Eğitilmiş Model ile Test ve Test Sonuçlarını Kaydetme
 
 if isfile('mobilenetv2_sgdm_best_model.mat')
     load('mobilenetv2_sgdm_best_model.mat', 'netCustom', 'classNames');
@@ -844,9 +840,9 @@ save('mobilenetv2_sgdm_test_results.mat', ...
     'accuracy_sgdm', 'precision_sgdm', 'sensitivity_sgdm', 'f1_score_sgdm', 'confMat_sgdm');
 disp('MobileNetV2 SGDM test sonuçları başarıyla kaydedildi.');
 
-%}
 
-%{
+
+
 %% Tüm Eğitim Modellerini ve Eğitim Bilgilerini trainNetworkProject Klasörüne Kaydetme
 
 saveFolder = fullfile(projectRoot, 'trainNetworkProject');
@@ -883,11 +879,7 @@ disp('MobileNetV2 SGDM modeli kaydedildi.');
 
 disp('Tüm model kayıt işlemleri başarıyla tamamlandı.');
 
-%}
-
-
-%{
-%% Adım 7: MobileNetV2 - Adam, RMSprop ve SGDM Test Accuracy Karşılaştırması
+%% MobileNetV2 - Adam, RMSprop ve SGDM Test Accuracy Karşılaştırması
 
 accuracy_mobilenetv2_adam = 0.9595;    
 accuracy_mobilenetv2_rmsprop = 0.9324;
@@ -911,10 +903,8 @@ end
 savefig(fullfile(saveFolder, 'mobilenetv2_optimizer_accuracy_comparison.fig'));
 disp('MobileNetV2 optimizer test accuracy grafiği .fig olarak kaydedildi.');
 
-%}
 
-%{
-%% Adım 7.1: MobileNetV2 - Adam, RMSprop ve SGDM Eğitim Accuracy Karşılaştırması
+%% MobileNetV2 - Adam, RMSprop ve SGDM Eğitim Accuracy Karşılaştırması
 
 train_accuracy_mobilenetv2_adam = 0.9820;   
 train_accuracy_mobilenetv2_rmsprop = 0.9615;
@@ -938,10 +928,8 @@ end
 savefig(fullfile(saveFolder, 'mobilenetv2_optimizer_training_accuracy_comparison.fig'));
 disp('MobileNetV2 optimizer training accuracy grafiği .fig olarak kaydedildi.');
 
-%}
 
-%{
-%% Adım 8: CNN ve MobileNetV2 Test Accuracy Karşılaştırması
+%% CNN ve MobileNetV2 Test Accuracy Karşılaştırması
 
 accuracy_cnn_adam = 0.9041;  
 accuracy_cnn_rmsprop = 0.8815; 
@@ -974,11 +962,8 @@ end
 savefig(fullfile(saveFolder, 'cnn_vs_mobilenetv2_accuracy_comparison.fig'));
 disp('CNN vs MobileNetV2 accuracy karşılaştırma grafiği .fig olarak kaydedildi.');
 
-%}
 
-%{
-
-%% Adım 8.1: CNN ve MobileNetV2 Eğitim Accuracy Karşılaştırması
+%% CNN ve MobileNetV2 Eğitim Accuracy Karşılaştırması
 
 train_accuracy_cnn_adam = 0.9310;    
 train_accuracy_cnn_rmsprop = 0.9025; 
@@ -999,7 +984,7 @@ train_accuracies = [train_accuracy_cnn_adam, train_accuracy_cnn_rmsprop, train_a
 figure;
 bar(modelNames, train_accuracies);
 ylabel('Training Accuracy (%)');
-xlabel('Model - Optimizer');
+xlabel('Model - Optimizer')
 ylim([0 100]);
 title('CNN ve MobileNetV2 Eğitim Accuracy Karşılaştırması');
 grid on;
@@ -1011,5 +996,4 @@ end
 savefig(fullfile(saveFolder, 'cnn_vs_mobilenetv2_training_accuracy_comparison.fig'));
 disp('CNN vs MobileNetV2 eğitim accuracy karşılaştırma grafiği .fig olarak kaydedildi.');
 
-%}
 
